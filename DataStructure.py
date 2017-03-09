@@ -1,5 +1,6 @@
 '''Package to define Data Structures'''
 import abc
+import copy
 '''Class Node is defined'''
 class Node:
     def __init__(self, index, label, nodeTrace):
@@ -9,7 +10,7 @@ class Node:
         self.moveState = None
         self.nextNode = None
     def __addMetadata__(self, moveState):
-        self.moveState = moveState
+        self.moveState = copy.copy(moveState)
     def __getMetadata__(self):
         return self.moveState
     def __addNodeTrace__(self, nodeTrace):
@@ -32,7 +33,10 @@ class Node:
     def __addIndex__(self, index):
         self.index = index
     def __str__(self):
-        return 'Index: '+str(self.index)+'\nLabel: '+str(self.label)+'\nNodeTrace: '+str(self.nodeTrace)+'\nmoveState: '+str(self.moveState)+'\nnextNode: '+str(self.nextNode)
+        if(self.nextNode != None):
+            return 'Index: '+str(self.index)+'\nLabel: '+str(self.label)+'\nNodeTrace: '+str(self.nodeTrace)+'\nmoveState: '+str(self.moveState)+'\nnextNode: '+str(self.nextNode.__getLabel__())
+        else:
+            return 'Index: '+str(self.index)+'\nLabel: '+str(self.label)+'\nNodeTrace: '+str(self.nodeTrace)+'\nmoveState: '+str(self.moveState)+'\nnextNode: '+str(None)
 '''Class DataStructure is defined'''
 class DataStructure:
     def __init__(self):
@@ -46,7 +50,7 @@ class DataStructure:
     def __peek__(self):
         return self.firstNode
     def __isEmpty__(self):
-        if(firstNode != None):
+        if(self.firstNode == None):
             return True
         else:
             return False
@@ -62,7 +66,10 @@ class Queue(DataStructure):
             self.firstNode = self.firstNode.nextNode
         return aux
     def __put__(self, nextNode):
-        self.firstNode.__addNextNode__(nextNode)
+        if(self.firstNode == None):
+            self.firstNode = nextNode
+        else:
+            self.firstNode.__addNextNode__(nextNode)
 '''Class Stack'''
 class Stack(DataStructure):
     def __init__(self):
@@ -73,14 +80,6 @@ class Stack(DataStructure):
             self.firstNode = aux.__getNextNode__()
         return aux
     def __put__(self, nextNode):
-        print('Datastructure Metadata nextNode:')
-        print(nextNode)
-        if(self.firstNode != None):
-            print('Datastructure Metadata First:')
-            print(self)
         nextNode.__addNextNode__(self.firstNode)
         self.firstNode = nextNode
-        if(self.firstNode != None):
-            print('Datastructure Metadata Then:')
-            print(self)
 '''Class Priorized Queue TODO'''
